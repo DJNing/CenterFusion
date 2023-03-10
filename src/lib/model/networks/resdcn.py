@@ -17,10 +17,11 @@ import torch
 import torch.nn as nn
 
 try:
-  from .DCNv2.dcn_v2 import DCN
+    from .DCNv2.dcn_v2 import DCN
 except:
-  print('Import DCN failed')
-  DCN = None
+#   print('Import DCN failed')
+#   DCN = None
+    from .DCNv2_latest.dcn_v2 import DCN
 import torch.utils.model_zoo as model_zoo
 from .base_model import BaseModel
 
