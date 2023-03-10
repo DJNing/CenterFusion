@@ -12,3 +12,8 @@
 	path = src/tools/nuscenes-devkit
 	url = https://github.com/nutonomy/nuscenes-devkit
 	branch = master
+
+[submodule "DCN-v2"]
+	path = src/lib/model/networks/DCNv2_latest
+	url = https://github.com/jinfagang/DCNv2_latest.git
+	branch = master

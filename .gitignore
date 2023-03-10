@@ -132,3 +132,5 @@ ENV/
 
 # mypy
 .mypy_cache/
+# DCNv2
+src/lib/model/networks/DCNv2_latest/
