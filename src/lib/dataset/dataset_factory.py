@@ -16,7 +16,7 @@ from .datasets.nuscenes import nuScenes
 from .datasets.crowdhuman import CrowdHuman
 from .datasets.kitti_tracking import KITTITracking
 from .datasets.custom_dataset import CustomDataset
-
+from .datasets.vod import vod
 dataset_factory = {
   'custom': CustomDataset,
   'coco': COCO,
@@ -26,6 +26,7 @@ dataset_factory = {
   'nuscenes': nuScenes,
   'crowdhuman': CrowdHuman,
   'kitti_tracking': KITTITracking,
+  'vod': vod
 }
 
 

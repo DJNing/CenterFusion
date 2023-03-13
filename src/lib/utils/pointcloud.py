@@ -282,7 +282,7 @@ def pc_dep_to_hm_torch(pc_hm, pc_dep, dep, bbox, dist_thresh, opt):
     bbox_int = torch.tensor([torch.floor(bbox[0]), 
                          torch.floor(bbox[1]), 
                          torch.ceil(bbox[2]), 
-                         torch.ceil(bbox[3])], dtype=torch.int32)# format: xyxy
+                         torch.ceil(bbox[3])]).type(torch.IntTensor)# format: xyxy
 
     roi = pc_dep[:, bbox_int[1]:bbox_int[3]+1, bbox_int[0]:bbox_int[2]+1]
     pc_dep = roi[opt.pc_feat_channels['pc_dep']]

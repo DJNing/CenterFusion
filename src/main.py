@@ -40,6 +40,7 @@ def main(opt):
 
   print('Creating model...')
   model = create_model(opt.arch, opt.heads, opt.head_conv, opt=opt)
+  print(model)
   optimizer = get_optimizer(opt, model)
   start_epoch = 0
   lr = opt.lr
@@ -101,16 +102,16 @@ def main(opt):
           out_dir = val_loader.dataset.run_eval(preds, opt.save_dir, 
                                                 n_plots=opt.eval_n_plots, 
                                                 render_curves=opt.eval_render_curves)
-          
+          if out_dir is not None:
           # log dataset-specific evaluation metrics
-          with open('{}/metrics_summary.json'.format(out_dir), 'r') as f:
-            metrics = json.load(f)
-          logger.scalar_summary('AP/overall', metrics['mean_ap']*100.0, epoch)
-          for k,v in metrics['mean_dist_aps'].items():
-            logger.scalar_summary('AP/{}'.format(k), v*100.0, epoch)
-          for k,v in metrics['tp_errors'].items():
-            logger.scalar_summary('Scores/{}'.format(k), v, epoch)
-          logger.scalar_summary('Scores/NDS', metrics['nd_score'], epoch)
+            with open('{}/metrics_summary.json'.format(out_dir), 'r') as f:
+              metrics = json.load(f)
+            logger.scalar_summary('AP/overall', metrics['mean_ap']*100.0, epoch)
+            for k,v in metrics['mean_dist_aps'].items():
+              logger.scalar_summary('AP/{}'.format(k), v*100.0, epoch)
+            for k,v in metrics['tp_errors'].items():
+              logger.scalar_summary('Scores/{}'.format(k), v, epoch)
+            logger.scalar_summary('Scores/NDS', metrics['nd_score'], epoch)
       
       # log eval results
       for k, v in log_dict_val.items():

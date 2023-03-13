@@ -223,8 +223,11 @@ class Trainer(object):
         for i in range(len(dets[0])):
           if dets[0][i]['score'] > self.opt.out_thresh and all(dets[0][i]['dim'] > 0):
             result.append(dets[0][i])
-
-        img_id = batch['meta']['img_id'].numpy().astype(np.int32)[0]
+        try:
+          img_id = batch['meta']['img_id'].numpy().astype(np.int32)[0]
+        except:
+          if type(batch['meta']['img_id']) is list:
+            img_id = batch['meta']['img_id'][0]
         results[img_id] = result
  
       del output, loss, loss_stats

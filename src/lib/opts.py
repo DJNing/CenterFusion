@@ -127,13 +127,13 @@ class opts(object):
                              help='when to save the model to disk.')
     self.parser.add_argument('--num_epochs', type=int, default=70,
                              help='total training epochs.')
-    self.parser.add_argument('--batch_size', type=int, default=32,
+    self.parser.add_argument('--batch_size', type=int, default=4,
                              help='batch size')
     self.parser.add_argument('--master_batch_size', type=int, default=-1,
                              help='batch size on the master gpu.')
     self.parser.add_argument('--num_iters', type=int, default=-1,
                              help='default: #samples / batch_size.')
-    self.parser.add_argument('--val_intervals', type=int, default=10,
+    self.parser.add_argument('--val_intervals', type=int, default=1,
                              help='number of epochs to run validation.')
     self.parser.add_argument('--trainval', action='store_true',
                              help='include validation in training and '
@@ -419,7 +419,7 @@ class opts(object):
       opt.sort_det_by_dist = False
       opt.sigmoid_dep_sec = True
       opt.normalize_depth = True
-      opt.secondary_heads = ['velocity', 'nuscenes_att', 'dep_sec', 'rot_sec']
+      
       opt.hm_dist_thresh = {
         'car': 0, 
         'truck': 0,
@@ -436,9 +436,9 @@ class opts(object):
       opt.custom_head_convs = {
         'dep_sec': 3,
         'rot_sec': 3,
-        'velocity': 3,
         'nuscenes_att': 3,
       }
+      opt.secondary_heads = ['nuscenes_att', 'dep_sec', 'rot_sec']
       
       opt.pc_feat_channels = {feat: i for i,feat in enumerate(opt.pc_feat_lvl)}
 
@@ -494,7 +494,8 @@ class opts(object):
       opt.heads.update({'nuscenes_att': 8})
     if opt.velocity:
       opt.heads.update({'velocity': 3})
-
+      opt.custom_head_convs.update({'velocity': 3})
+      opt.secondary_heads += ['velocity']
     weight_dict = {'hm': opt.hm_weight, 'wh': opt.wh_weight,
                    'reg': opt.off_weight, 'hps': opt.hp_weight,
                    'hm_hp': opt.hm_hp_weight, 'hp_offset': opt.off_weight,

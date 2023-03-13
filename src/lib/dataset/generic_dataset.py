@@ -97,6 +97,37 @@ class GenericDataset(data.Dataset):
 
 
   def __getitem__(self, index):
+    '''
+    ret:
+      "image": image
+      "pc_2d": point cloud with ,
+      "pc_3d":
+      "pc_N": 
+      "pc_dep":
+      "hm": 
+      "ind":
+      'cat'
+      'mask'
+      'pc_hm'
+      'reg'
+      'reg_mask'
+      'wh'
+      'wh_mask'
+      'nuscenes_att'
+      'nuscenes_att_mask'
+      'velocity'
+      'velocity_mask'
+      'dep'
+      'dep_mask'
+      'dim'
+      'dim_mask'
+      'amodel_offset'
+      'amodel_offset_mask'
+      'rotbin'
+      'rotres'
+      'rot_mask'
+      'calib'
+    '''
     opt = self.opt
     img, anns, img_info, img_path = self._load_data(index)
     height, width = img.shape[0], img.shape[1]
@@ -763,9 +794,12 @@ class GenericDataset(data.Dataset):
     ret['reg_mask'][k] = 1
     draw_umich_gaussian(ret['hm'][cls_id - 1], ct_int, radius)
 
-    gt_det['bboxes'].append(
+    try:
+      gt_det['bboxes'].append(
       np.array([ct[0] - w / 2, ct[1] - h / 2,
                 ct[0] + w / 2, ct[1] + h / 2], dtype=np.float32))
+    except:
+      print(gt_det)
     gt_det['scores'].append(1)
     gt_det['clses'].append(cls_id - 1)
     gt_det['cts'].append(ct)
@@ -841,8 +875,8 @@ class GenericDataset(data.Dataset):
       ## get pointcloud heatmap
       if self.opt.disable_frustum:
         ret['pc_hm'] = ret['pc_dep']
-        if opt.normalize_depth:
-          ret['pc_hm'][self.opt.pc_feat_channels['pc_dep']] /= opt.max_pc_dist
+        if self.opt.normalize_depth:
+          ret['pc_hm'][self.opt.pc_feat_channels['pc_dep']] /= self.opt.max_pc_dist
       else:
         dist_thresh = get_dist_thresh(calib, ct, ann['dim'], ann['alpha'])
         pc_dep_to_hm(ret['pc_hm'], ret['pc_dep'], ann['depth'], bbox, dist_thresh, self.opt)
@@ -854,6 +888,7 @@ class GenericDataset(data.Dataset):
     pts = np.array(ann['keypoints'], np.float32).reshape(num_joints, 3) \
         if 'keypoints' in ann else np.zeros((self.num_joints, 3), np.float32)
     if self.opt.simple_radius > 0:
+      simple_radius = self.opt.simple_radius
       hp_radius = int(simple_radius(h, w, min_overlap=self.opt.simple_radius))
     else:
       hp_radius = gaussian_radius((math.ceil(h), math.ceil(w)))
